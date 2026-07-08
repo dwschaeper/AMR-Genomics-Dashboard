@@ -40,7 +40,7 @@ app.add_middleware(
 
 
 # build endpoints
-@app.get('/overview')
+@app.get("/overview")
 def get_overview():
     """
     Get an overview of the database. Used to generate the initial overview in the dashboard.
@@ -48,35 +48,37 @@ def get_overview():
     Returns json of num_samples, num_organisms, organisms (dict of organism: count), and locations (dict of "City, State": count)
     """
     result = {}
-    
+
     # grab data from metadata table
     metadata_query = text("SELECT * FROM Metadata")
     metadata = pd.read_sql_query(metadata_query, con=engine)
-    orgs = metadata.groupby('Organism').size().to_dict()
+    orgs = metadata.groupby("Organism").size().to_dict()
     num_orgs = len(orgs)
-    locations = metadata.groupby(['City', 'State']).size().to_dict()
+    locations = metadata.groupby(["City", "State"]).size().to_dict()
     num_locations = len(locations)
-    formatted_locations = {f'{city}, {state}': count for (city, state), count in locations.items()}
+    formatted_locations = {
+        f"{city}, {state}": count for (city, state), count in locations.items()
+    }
 
     # grab data from the AMR table
     amr_query = text("SELECT * FROM AMR")
     amr_data = pd.read_sql_query(amr_query, con=engine)
     amr_calls = len(amr_data)
-    amr_genes = amr_data['Gene'].unique()
+    amr_genes = amr_data["Gene"].unique()
 
-    result['num_samples'] = len(metadata)
-    result['num_organisms'] = num_orgs
-    result['organisms'] = orgs
-    result['locations'] = formatted_locations
-    result['num_locations'] = num_locations
-    result['num_amr_calls'] = amr_calls
-    result['num_amr_genes'] = len(amr_genes)
+    result["num_samples"] = len(metadata)
+    result["num_organisms"] = num_orgs
+    result["organisms"] = orgs
+    result["locations"] = formatted_locations
+    result["num_locations"] = num_locations
+    result["num_amr_calls"] = amr_calls
+    result["num_amr_genes"] = len(amr_genes)
 
     return result
 
 
-@app.get('/amr')
-def get_amr(organism: str = 'All Organisms'):
+@app.get("/amr")
+def get_amr(organism: str = "All Organisms"):
     """
     Get the AMR data. Used to generate the AMR table in the dashboard.
 
@@ -84,7 +86,7 @@ def get_amr(organism: str = 'All Organisms'):
     """
     result = {}
     # grab AMR data for the selected orgnanism, or all
-    if organism == 'All Organisms':
+    if organism == "All Organisms":
         query = text("""SELECT DrugClass, Organism
                      FROM AMR
                      INNER JOIN Metadata ON AMR.ID = Metadata.ID
@@ -100,20 +102,20 @@ def get_amr(organism: str = 'All Organisms'):
 
         amr_data = pd.read_sql_query(query, con=engine, params={"organism": organism})
 
-    drug_class_counts = amr_data.groupby('DrugClass').size().to_dict()
+    drug_class_counts = amr_data.groupby("DrugClass").size().to_dict()
 
     # will need to do a separate query to get the organisms, since the amr_data may be filtered by organism
-    org_query = text('SELECT DISTINCT Organism FROM Metadata')
+    org_query = text("SELECT DISTINCT Organism FROM Metadata")
     organisms = pd.read_sql_query(org_query, con=engine)
-    organisms = sorted(organisms['Organism'].unique().tolist())
+    organisms = sorted(organisms["Organism"].unique().tolist())
 
-    result['drug_class_counts'] = drug_class_counts
-    result['organisms'] = organisms
+    result["drug_class_counts"] = drug_class_counts
+    result["organisms"] = organisms
 
     return result
 
 
-@app.post('/add_isolate')
+@app.post("/add_isolate")
 async def add_isolate(request: AddIsolateRequest):
     # add to metadata table
     with engine.begin() as conn:
@@ -129,8 +131,8 @@ async def add_isolate(request: AddIsolateRequest):
                 "latitude": request.latitude,
                 "longitude": request.longitude,
                 "organism": request.organism,
-                "collection_date": request.collection_date
-            }
+                "collection_date": request.collection_date,
+            },
         )
 
         # add to isolate data table
@@ -139,10 +141,7 @@ async def add_isolate(request: AddIsolateRequest):
                 INSERT INTO IsolateData (ID, Contigs)
                 VALUES (:sample_id, :num_contigs)
             """),
-            {
-                "sample_id": request.sample_id,
-                "num_contigs": request.num_contigs
-            }
+            {"sample_id": request.sample_id, "num_contigs": request.num_contigs},
         )
 
         # add to AMR table
@@ -155,6 +154,6 @@ async def add_isolate(request: AddIsolateRequest):
                 "sample_id": request.sample_id,
                 "amr_gene": request.amr_gene,
                 "drug_class": request.drug_class,
-                "phenotype": request.phenotype
-            }
+                "phenotype": request.phenotype,
+            },
         )

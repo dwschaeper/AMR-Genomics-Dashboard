@@ -5,3 +5,4 @@ pandas
 matplotlib
 pydataset
 pytest
+ruff

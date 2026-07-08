@@ -3,6 +3,7 @@ import random
 from datetime import datetime, timedelta
 import argparse
 
+
 def parse() -> int:
     """
     Parse arguments for the script.
@@ -11,17 +12,20 @@ def parse() -> int:
         int: Number of samples to generate (default: 1000)
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--samples', type=int, default=1000, help='Number of samples to generate')
+    parser.add_argument(
+        "--samples", type=int, default=1000, help="Number of samples to generate"
+    )
 
     args = parser.parse_args()
 
     return args.samples
 
-if __name__ == '__main__':
-    '''
+
+if __name__ == "__main__":
+    """
     This script creates an SQLite database called "genomics.db" with three tables: Metadata, IsolateData, and AMR. 
     It populates the tables with random data for the specified number of samples, including locations, organisms, collection dates, contig counts, and antimicrobial resistance (AMR) genes.
-    '''
+    """
     # get number of samples
     samples = parse()
 
@@ -42,7 +46,7 @@ if __name__ == '__main__':
         ("Columbus", "Ohio", 39.9612, -82.9988),
         ("Cleveland", "Ohio", 41.4993, -81.6944),
         ("Kansas City", "Missouri", 39.0997, -94.5786),
-        ("St. Louis", "Missouri", 38.6270, -90.1994)
+        ("St. Louis", "Missouri", 38.6270, -90.1994),
     ]
     organisms = [
         "Escherichia coli",
@@ -50,7 +54,7 @@ if __name__ == '__main__':
         "Listeria monocytogenes",
         "Campylobacter jejuni",
         "Staphylococcus aureus",
-        "Klebsiella pneumoniae"
+        "Klebsiella pneumoniae",
     ]
     amr_catalog = [
         ("blaCTX-M-15", "Beta-lactam", "Resistant"),
@@ -60,7 +64,7 @@ if __name__ == '__main__':
         ("aac(6')-Ib", "Aminoglycoside", "Resistant"),
         ("qnrS1", "Fluoroquinolone", "Resistant"),
         ("mcr-1", "Colistin", "Resistant"),
-        ("vanA", "Glycopeptide", "Resistant")
+        ("vanA", "Glycopeptide", "Resistant"),
     ]
 
     # make database and tables
@@ -102,46 +106,40 @@ if __name__ == '__main__':
     start = datetime(2020, 1, 1)
 
     for i in range(samples):
-
-        sample_id = f"S{i+1:04d}"
+        sample_id = f"S{i + 1:04d}"
 
         city, state, lat, lon = random.choice(locations)
 
         organism = random.choice(organisms)
 
-        collection_date = (
-            start + timedelta(days=random.randint(0, 2000))
-        ).strftime("%Y-%m-%d")
+        collection_date = (start + timedelta(days=random.randint(0, 2000))).strftime(
+            "%Y-%m-%d"
+        )
 
         contigs = random.randint(20, 450)
 
-        cur.execute("""
+        cur.execute(
+            """
             INSERT INTO Metadata
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
-            sample_id,
-            city,
-            state,
-            lat,
-            lon,
-            organism,
-            collection_date
-        ))
+        """,
+            (sample_id, city, state, lat, lon, organism, collection_date),
+        )
 
-        cur.execute("""
+        cur.execute(
+            """
             INSERT INTO IsolateData
             VALUES (?, ?)
-        """, (
-            sample_id,
-            contigs
-        ))
+        """,
+            (sample_id, contigs),
+        )
 
         # Give each isolate 0–4 AMR genes
         for gene, drug_class, phenotype in random.sample(
-            amr_catalog,
-            random.randint(0, 4)
+            amr_catalog, random.randint(0, 4)
         ):
-            cur.execute("""
+            cur.execute(
+                """
                 INSERT INTO AMR (
                     ID,
                     Gene,
@@ -149,12 +147,9 @@ if __name__ == '__main__':
                     Phenotype
                 )
                 VALUES (?, ?, ?, ?)
-            """, (
-                sample_id,
-                gene,
-                drug_class,
-                phenotype
-            ))
+            """,
+                (sample_id, gene, drug_class, phenotype),
+            )
 
     conn.commit()
     conn.close()
