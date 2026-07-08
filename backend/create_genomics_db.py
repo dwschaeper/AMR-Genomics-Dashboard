@@ -1,12 +1,30 @@
 import sqlite3
 import random
 from datetime import datetime, timedelta
+import argparse
+
+def parse() -> int:
+    """
+    Parse arguments for the script.
+
+    Returns:
+        int: Number of samples to generate (default: 1000)
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--samples', type=int, default=1000, help='Number of samples to generate')
+
+    args = parser.parse_args()
+
+    return args.samples
 
 if __name__ == '__main__':
     '''
     This script creates an SQLite database called "genomics.db" with three tables: Metadata, IsolateData, and AMR. 
-    It populates the tables with random data for 1000 samples, including locations, organisms, collection dates, contig counts, and antimicrobial resistance (AMR) genes.
+    It populates the tables with random data for the specified number of samples, including locations, organisms, collection dates, contig counts, and antimicrobial resistance (AMR) genes.
     '''
+    # get number of samples
+    samples = parse()
+
     # initalialize variables for locations, organisms, and AMR catalog
     locations = [
         ("Indianapolis", "Indiana", 39.7684, -86.1581),
@@ -80,10 +98,10 @@ if __name__ == '__main__':
     );
     """)
 
-    # fill in random data for 1000 samples
+    # fill in random data
     start = datetime(2020, 1, 1)
 
-    for i in range(1000):
+    for i in range(samples):
 
         sample_id = f"S{i+1:04d}"
 

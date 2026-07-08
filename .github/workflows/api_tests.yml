@@ -33,7 +33,7 @@ jobs:
 
       - name: Create test database
         run: |
-          python create_genomics_db.py
+          python create_genomics_db.py --samples 100
 
       - name: Run API tests
         run: |
