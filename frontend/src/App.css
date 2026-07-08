@@ -1,0 +1,70 @@
+/* General page styling */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+}
+
+h1, h2, h3 {
+    color: #1f3c5b;
+}
+
+
+/* Main container */
+.dashboard-container {
+    max-width: 1500px;
+    margin: auto;
+    padding: 30px;
+}
+
+
+/* Plot section */
+.plot-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+
+/* Two column plots */
+.plot-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+
+/* Mobile support */
+@media (max-width: 800px) {
+    .dashboard-container {
+        padding: 15px;
+    }
+
+    .plot-grid {
+        flex-direction: column;
+    }
+}
+
+
+nav {
+    display: flex;
+    justify-content: left;
+    gap: 30px;
+    margin-top: 15px;
+}
+
+
+nav a {
+    color: #1f3c5b;
+    text-decoration: underline;
+    font-size: 18px;
+}
+
+
+nav a:hover {
+    color: #0077cc;
+}

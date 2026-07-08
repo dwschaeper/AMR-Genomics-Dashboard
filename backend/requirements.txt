@@ -1,0 +1,6 @@
+fastapi[standard]
+pydantic
+sqlalchemy
+pandas
+matplotlib
+pydataset
