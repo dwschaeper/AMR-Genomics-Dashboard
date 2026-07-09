@@ -23,7 +23,7 @@ def parse() -> int:
 
 if __name__ == "__main__":
     """
-    This script creates an SQLite database called "genomics.db" with three tables: Metadata, IsolateData, and AMR. 
+    This script creates an SQLite database called "genomics.db" with three tables: Metadata, IsolateData, and AMR.
     It populates the tables with random data for the specified number of samples, including locations, organisms, collection dates, contig counts, and antimicrobial resistance (AMR) genes.
     """
     # get number of samples
@@ -77,7 +77,8 @@ if __name__ == "__main__":
     DROP TABLE IF EXISTS Metadata;
 
     CREATE TABLE Metadata (
-        ID TEXT PRIMARY KEY,
+        RecordID INTEGER PRIMARY KEY AUTOINCREMENT,
+        SampleID TEXT,
         City TEXT,
         State TEXT,
         Latitude REAL,
@@ -87,18 +88,18 @@ if __name__ == "__main__":
     );
 
     CREATE TABLE IsolateData (
-        ID TEXT PRIMARY KEY,
+        RecordID INTEGER PRIMARY KEY,
         Contigs INTEGER,
-        FOREIGN KEY(ID) REFERENCES Metadata(ID)
+        FOREIGN KEY(RecordID) REFERENCES Metadata(RecordID)
     );
 
     CREATE TABLE AMR (
         AMR_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        ID TEXT,
+        RecordID INTEGER,
         Gene TEXT,
         DrugClass TEXT,
         Phenotype TEXT,
-        FOREIGN KEY(ID) REFERENCES Metadata(ID)
+        FOREIGN KEY(RecordID) REFERENCES Metadata(RecordID)
     );
     """)
 
@@ -120,18 +121,28 @@ if __name__ == "__main__":
 
         cur.execute(
             """
-            INSERT INTO Metadata
+            INSERT INTO Metadata (
+                SampleID,
+                City,
+                State,
+                Latitude,
+                Longitude,
+                Organism,
+                CollectionDate
+            )
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
             (sample_id, city, state, lat, lon, organism, collection_date),
         )
+
+        record_id = cur.lastrowid
 
         cur.execute(
             """
             INSERT INTO IsolateData
             VALUES (?, ?)
         """,
-            (sample_id, contigs),
+            (record_id, contigs),
         )
 
         # Give each isolate 0–4 AMR genes
@@ -141,14 +152,14 @@ if __name__ == "__main__":
             cur.execute(
                 """
                 INSERT INTO AMR (
-                    ID,
+                    RecordID,
                     Gene,
                     DrugClass,
                     Phenotype
                 )
                 VALUES (?, ?, ?, ?)
             """,
-                (sample_id, gene, drug_class, phenotype),
+                (record_id, gene, drug_class, phenotype),
             )
 
     conn.commit()

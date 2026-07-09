@@ -89,14 +89,14 @@ def get_amr(organism: str = "All Organisms"):
     if organism == "All Organisms":
         query = text("""SELECT DrugClass, Organism
                      FROM AMR
-                     INNER JOIN Metadata ON AMR.ID = Metadata.ID
+                     INNER JOIN Metadata ON AMR.RecordID = Metadata.RecordID
                      """)
         amr_data = pd.read_sql_query(query, con=engine)
     else:
         query = text("""
                     SELECT DrugClass, Organism
                     FROM AMR
-                    INNER JOIN Metadata ON AMR.ID = Metadata.ID
+                    INNER JOIN Metadata ON AMR.RecordID = Metadata.RecordID
                     WHERE Organism = :organism
                 """)
 
@@ -121,7 +121,7 @@ async def add_isolate(request: AddIsolateRequest):
     with engine.begin() as conn:
         conn.execute(
             text("""
-                INSERT INTO Metadata (ID, City, State, Latitude, Longitude, Organism, CollectionDate)
+                INSERT INTO Metadata (SampleID, City, State, Latitude, Longitude, Organism, CollectionDate)
                 VALUES (:sample_id, :city, :state, :latitude, :longitude, :organism, :collection_date)
             """),
             {
@@ -135,23 +135,25 @@ async def add_isolate(request: AddIsolateRequest):
             },
         )
 
+        record_id = conn.execute(text("SELECT last_insert_rowid()")).scalar_one()
+
         # add to isolate data table
         conn.execute(
             text("""
-                INSERT INTO IsolateData (ID, Contigs)
-                VALUES (:sample_id, :num_contigs)
+                INSERT INTO IsolateData (RecordID, Contigs)
+                VALUES (:record_id, :num_contigs)
             """),
-            {"sample_id": request.sample_id, "num_contigs": request.num_contigs},
+            {"record_id": record_id, "num_contigs": request.num_contigs},
         )
 
         # add to AMR table
         conn.execute(
             text("""
-                INSERT INTO AMR (ID, Gene, DrugClass, Phenotype)
-                VALUES (:sample_id, :amr_gene, :drug_class, :phenotype)
+                INSERT INTO AMR (RecordID, Gene, DrugClass, Phenotype)
+                VALUES (:record_id, :amr_gene, :drug_class, :phenotype)
             """),
             {
-                "sample_id": request.sample_id,
+                "record_id": record_id,
                 "amr_gene": request.amr_gene,
                 "drug_class": request.drug_class,
                 "phenotype": request.phenotype,
