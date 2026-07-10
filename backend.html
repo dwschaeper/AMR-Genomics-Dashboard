@@ -34,8 +34,152 @@
             
   <section id="backend">
 <h1>Backend<a class="headerlink" href="#backend" title="Link to this heading">¶</a></h1>
-<section id="main-api">
-<h2>Main API<a class="headerlink" href="#main-api" title="Link to this heading">¶</a></h2>
+<section id="module-main">
+<span id="main-api"></span><h2>Main API<a class="headerlink" href="#module-main" title="Link to this heading">¶</a></h2>
+<p>FastAPI application for the AMR Genomics Dashboard backend.</p>
+<p>The service exposes read endpoints for dashboard summaries and a write
+endpoint for adding isolate records to the SQLite database.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="main.AddIsolateRequest">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">AddIsolateRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_contigs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amr_gene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drug_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phenotype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.AddIsolateRequest" title="Link to this definition">¶</a></dt>
+<dd><p>Request body for creating a new isolate record.</p>
+<p>The frontend submits this model to the <code class="docutils literal notranslate"><span class="pre">/add_isolate</span></code> endpoint to append a new isolate record to the database.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.amr_gene">
+<span class="sig-name descname"><span class="pre">amr_gene</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#main.AddIsolateRequest.amr_gene" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.city">
+<span class="sig-name descname"><span class="pre">city</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#main.AddIsolateRequest.city" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.collection_date">
+<span class="sig-name descname"><span class="pre">collection_date</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#main.AddIsolateRequest.collection_date" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.drug_class">
+<span class="sig-name descname"><span class="pre">drug_class</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#main.AddIsolateRequest.drug_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.latitude">
+<span class="sig-name descname"><span class="pre">latitude</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#main.AddIsolateRequest.latitude" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.longitude">
+<span class="sig-name descname"><span class="pre">longitude</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#main.AddIsolateRequest.longitude" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#main.AddIsolateRequest.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.num_contigs">
+<span class="sig-name descname"><span class="pre">num_contigs</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#main.AddIsolateRequest.num_contigs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.organism">
+<span class="sig-name descname"><span class="pre">organism</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#main.AddIsolateRequest.organism" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.phenotype">
+<span class="sig-name descname"><span class="pre">phenotype</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#main.AddIsolateRequest.phenotype" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.sample_id">
+<span class="sig-name descname"><span class="pre">sample_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#main.AddIsolateRequest.sample_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.AddIsolateRequest.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#main.AddIsolateRequest.state" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.add_isolate">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">add_isolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#main.AddIsolateRequest" title="main.AddIsolateRequest"><span class="pre">AddIsolateRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.add_isolate" title="Link to this definition">¶</a></dt>
+<dd><p>Append a new isolate and its related records.</p>
+<p>The endpoint writes the submitted isolate into <code class="docutils literal notranslate"><span class="pre">Metadata</span></code> first, then uses
+the generated internal <code class="docutils literal notranslate"><span class="pre">RecordID</span></code> to insert the related assembly and AMR
+rows into <code class="docutils literal notranslate"><span class="pre">IsolateData</span></code> and <code class="docutils literal notranslate"><span class="pre">AMR</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – AddIsolateRequest request body containing metadata, assembly, and AMR
+annotation fields.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A confirmation payload with a human-readable <code class="docutils literal notranslate"><span class="pre">message</span></code> field.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.get_amr">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">get_amr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'All</span> <span class="pre">Organisms'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.get_amr" title="Link to this definition">¶</a></dt>
+<dd><p>Return AMR drug-class counts, optionally filtered by organism.</p>
+<p>The endpoint joins <code class="docutils literal notranslate"><span class="pre">AMR</span></code> and <code class="docutils literal notranslate"><span class="pre">Metadata</span></code> so the frontend can display
+a compact summary of AMR activity across all organisms or within a single
+organism filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>organism</strong> – Organism name to filter by. Use <code class="docutils literal notranslate"><span class="pre">&quot;All</span> <span class="pre">Organisms&quot;</span></code> to
+return unfiltered results (default).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A JSON-serializable mapping containing:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">drug_class_counts</span></code>: Mapping of drug class to annotation count.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">organisms</span></code>: List of distinct organism names in the database.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.get_overview">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">get_overview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.get_overview" title="Link to this definition">¶</a></dt>
+<dd><p>Return summary counts for the dashboard overview.</p>
+<p>The response aggregates the current database contents into a compact JSON
+object for the overview cards and charts on the frontend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>A JSON-serializable mapping containing:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">num_samples</span></code>: Total number of rows in <code class="docutils literal notranslate"><span class="pre">Metadata</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_organisms</span></code>: Number of unique organisms.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">organisms</span></code>: Mapping of organism name to sample count.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">locations</span></code>: Mapping of <code class="docutils literal notranslate"><span class="pre">&quot;City,</span> <span class="pre">State&quot;</span></code> to sample count.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_locations</span></code>: Number of unique location pairs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_amr_calls</span></code>: Total number of AMR annotations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_amr_genes</span></code>: Number of unique AMR genes.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-create_genomics_db">
 <span id="database-generator"></span><h2>Database Generator<a class="headerlink" href="#module-create_genomics_db" title="Link to this heading">¶</a></h2>
@@ -92,7 +236,7 @@ samples to create.</p>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Backend</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#main-api">Main API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-main">Main API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-create_genomics_db">Database Generator</a></li>
 </ul>
 </li>
