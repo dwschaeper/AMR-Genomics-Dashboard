@@ -2,6 +2,12 @@
 
 A full-stack genomics dashboard built with FastAPI and React for exploring pathogen sequencing metadata and antimicrobial resistance (AMR) results. This provides interactive visualizations, summary statistics, and filtering capabilities through a REST API.
 
+## Documentation
+
+Full documentation available at:
+
+https://dwschaeper.github.io/AMR-Genomics-Dashboard/
+
 ## Features
 
 * Interactive dashboard for genomics sample metadata
