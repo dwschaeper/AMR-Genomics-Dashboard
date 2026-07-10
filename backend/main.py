@@ -1,26 +1,38 @@
+"""
+FastAPI application for the AMR Genomics Dashboard backend.
+
+The service exposes read endpoints for dashboard summaries and a write
+endpoint for adding isolate records to the SQLite database.
+"""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from sqlalchemy import create_engine, text
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 import pandas as pd
 
 
 # create request body model
 class AddIsolateRequest(BaseModel):
-    sample_id: str
-    city: str
-    state: str
-    latitude: float
-    longitude: float
-    organism: str
-    collection_date: str
-    num_contigs: int
-    amr_gene: str
-    drug_class: str
-    phenotype: str
+    """
+    Request body for creating a new isolate record.
+
+    The frontend submits this model to the ``/add_isolate`` endpoint to append a new isolate record to the database.
+    """
+    sample_id: str = Field(description='User-facing sample identifier supplied by the client.')
+    city: str = Field(description='City where the isolate was collected.')
+    state: str = Field(description='State where the isolate was collected.')
+    latitude: float = Field(description='Latitude of the collection location.')
+    longitude: float = Field(description='Longitude of the collection location.')
+    organism: str = Field(description='Organism associated with the isolate.')
+    collection_date: str = Field(description='Collection date in ``YYYY-MM-DD`` format.')
+    num_contigs: int = Field(description='Number of contigs in the isolate assembly.')
+    amr_gene: str = Field(description='AMR gene annotation reported by the client.')
+    drug_class: str = Field(description='Antimicrobial drug class associated with the gene.')
+    phenotype: str = Field(description='Phenotype associated with the gene.')
 
 
 # initialize
@@ -43,9 +55,21 @@ app.add_middleware(
 @app.get("/overview")
 def get_overview():
     """
-    Get an overview of the database. Used to generate the initial overview in the dashboard.
+    Return summary counts for the dashboard overview.
 
-    Returns json of num_samples, num_organisms, organisms (dict of organism: count), and locations (dict of "City, State": count)
+    The response aggregates the current database contents into a compact JSON
+    object for the overview cards and charts on the frontend.
+
+    Returns:
+        dict: A JSON-serializable mapping containing:
+
+        - ``num_samples``: Total number of rows in ``Metadata``.
+        - ``num_organisms``: Number of unique organisms.
+        - ``organisms``: Mapping of organism name to sample count.
+        - ``locations``: Mapping of ``"City, State"`` to sample count.
+        - ``num_locations``: Number of unique location pairs.
+        - ``num_amr_calls``: Total number of AMR annotations.
+        - ``num_amr_genes``: Number of unique AMR genes.
     """
     result = {}
 
@@ -80,9 +104,21 @@ def get_overview():
 @app.get("/amr")
 def get_amr(organism: str = "All Organisms"):
     """
-    Get the AMR data. Used to generate the AMR table in the dashboard.
+    Return AMR drug-class counts, optionally filtered by organism.
 
-    Returns json of AMR data.
+    The endpoint joins ``AMR`` and ``Metadata`` so the frontend can display
+    a compact summary of AMR activity across all organisms or within a single
+    organism filter.
+
+    Args:
+        organism: Organism name to filter by. Use ``"All Organisms"`` to
+            return unfiltered results (default).
+
+    Returns:
+        dict: A JSON-serializable mapping containing:
+
+        - ``drug_class_counts``: Mapping of drug class to annotation count.
+        - ``organisms``: List of distinct organism names in the database.
     """
     result = {}
     # grab AMR data for the selected orgnanism, or all
@@ -117,6 +153,20 @@ def get_amr(organism: str = "All Organisms"):
 
 @app.post("/add_isolate")
 async def add_isolate(request: AddIsolateRequest):
+    """
+    Append a new isolate and its related records.
+
+    The endpoint writes the submitted isolate into ``Metadata`` first, then uses
+    the generated internal ``RecordID`` to insert the related assembly and AMR
+    rows into ``IsolateData`` and ``AMR``.
+
+    Args:
+        request: AddIsolateRequest request body containing metadata, assembly, and AMR
+            annotation fields.
+
+    Returns:
+        dict: A confirmation payload with a human-readable ``message`` field.
+    """
     # add to metadata table
     with engine.begin() as conn:
         conn.execute(
@@ -159,3 +209,5 @@ async def add_isolate(request: AddIsolateRequest):
                 "phenotype": request.phenotype,
             },
         )
+    
+    return {"message": "Isolate added successfully."}

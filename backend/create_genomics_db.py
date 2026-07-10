@@ -1,3 +1,11 @@
+"""
+Generate a synthetic SQLite database for the AMR Genomics Dashboard.
+
+This script creates ``genomics.db`` with three related tables and populates
+them with randomly generated metadata, assembly statistics, and AMR gene
+annotations for dashboard development and testing.
+"""
+
 import sqlite3
 import random
 from datetime import datetime, timedelta
@@ -6,10 +14,14 @@ import argparse
 
 def parse() -> int:
     """
-    Parse arguments for the script.
+    Parse command-line arguments for the database generator.
+
+    This script currently accepts a single option for the number of synthetic
+    samples to create.
 
     Returns:
-        int: Number of samples to generate (default: 1000)
+        int: Number of samples to generate. Defaults to ``1000`` when the
+        ``--samples`` option is omitted.
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -22,10 +34,6 @@ def parse() -> int:
 
 
 if __name__ == "__main__":
-    """
-    This script creates an SQLite database called "genomics.db" with three tables: Metadata, IsolateData, and AMR.
-    It populates the tables with random data for the specified number of samples, including locations, organisms, collection dates, contig counts, and antimicrobial resistance (AMR) genes.
-    """
     # get number of samples
     samples = parse()
 

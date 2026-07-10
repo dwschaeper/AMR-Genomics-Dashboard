@@ -19,14 +19,14 @@ function AddIsolate() {
         })
 
         if (!response.ok) {
-            console.error("Failed to submit:", response.status);
-            setResponseMessage(`Failed to submit: ${response.status}`);
-            return;
-    }
+            console.error("Failed to submit:", response.status)
+            setResponseMessage(`Failed to submit: ${response.status}`)
+            return
+        }
 
-    const result = await response.json();
-    console.log(result);
-    setResponseMessage("Isolate added successfully!");
+        const result = await response.json()
+        console.log(result)
+        setResponseMessage(result.message)
     }
 
     // initialize state variables
