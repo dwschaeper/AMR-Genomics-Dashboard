@@ -39,7 +39,7 @@ def test_amr():
 
 def test_amr_organism():
     """
-    Test the /amr endpoint
+    Test the /amr endpoint with organism parameter
     """
     response = client.get("/amr/?organism=Escherichia%20coli")
 
@@ -49,6 +49,20 @@ def test_amr_organism():
 
     assert "drug_class_counts" in data
 
+
+def test_amr_location():
+    """
+    Test the /amr endpoint with the location parameter
+    """
+    response = client.get("/amr/?location=Indianapolis,Indiana")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "drug_class_counts" in data
+    assert "location_gene_counts" in data
+    
 
 def test_add_isolate():
     """

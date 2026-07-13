@@ -5,6 +5,8 @@ The service exposes read endpoints for dashboard summaries and a write
 endpoint for adding isolate records to the SQLite database.
 """
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -36,6 +38,7 @@ class AddIsolateRequest(BaseModel):
 
 
 # initialize
+print(os.getcwd())
 DATABASE_URL = "sqlite:///genomics.db"
 engine = create_engine(DATABASE_URL)
 app = FastAPI()
@@ -102,7 +105,7 @@ def get_overview():
 
 
 @app.get("/amr")
-def get_amr(organism: str = "All Organisms"):
+def get_amr(organism: str = "All Organisms", location: str = None):
     """
     Return AMR drug-class counts, optionally filtered by organism.
 
@@ -113,14 +116,17 @@ def get_amr(organism: str = "All Organisms"):
     Args:
         organism: Organism name to filter by. Use ``"All Organisms"`` to
             return unfiltered results (default).
+        location: Location name to filter by. Returns first entry location if not provided.
 
     Returns:
         dict: A JSON-serializable mapping containing:
 
         - ``drug_class_counts``: Mapping of drug class to annotation count.
         - ``organisms``: List of distinct organism names in the database.
+        - ''location_gene_counts'': Mapping of gene name to annotation count for the specified location, first location entry if not provided.
     """
     result = {}
+
     # grab AMR data for the selected orgnanism, or all
     if organism == "All Organisms":
         query = text("""SELECT DrugClass, Organism
@@ -135,10 +141,31 @@ def get_amr(organism: str = "All Organisms"):
                     INNER JOIN Metadata ON AMR.RecordID = Metadata.RecordID
                     WHERE Organism = :organism
                 """)
-
         amr_data = pd.read_sql_query(query, con=engine, params={"organism": organism})
-
+    
     drug_class_counts = amr_data.groupby("DrugClass").size().to_dict()
+
+    # grab genes present by location
+    if location:
+        query = text("""
+                     SELECT Gene
+                     FROM AMR
+                     INNER JOIN Metadata ON AMR.RecordID = Metadata.RecordID
+                     WHERE City || ',' || State in (:location)
+                 """)
+        location_data = pd.read_sql_query(query, con=engine, params={"location": location})
+    else:
+        first_entry = pd.read_sql_query(text("SELECT City || ',' || State as location FROM Metadata LIMIT 1"), con=engine)
+        query = text("""
+                     SELECT Gene
+                     FROM AMR
+                     INNER JOIN Metadata ON AMR.RecordID = Metadata.RecordID
+                     WHERE City || ',' || State in (:location)
+                 """)
+        location_data = pd.read_sql_query(query, con=engine, params={"location": first_entry["location"].iloc[0]})
+
+    location_gene_counts = location_data.groupby("Gene").size().to_dict()
+
 
     # will need to do a separate query to get the organisms, since the amr_data may be filtered by organism
     org_query = text("SELECT DISTINCT Organism FROM Metadata")
@@ -146,6 +173,7 @@ def get_amr(organism: str = "All Organisms"):
     organisms = sorted(organisms["Organism"].unique().tolist())
 
     result["drug_class_counts"] = drug_class_counts
+    result["location_gene_counts"] = location_gene_counts
     result["organisms"] = organisms
 
     return result
