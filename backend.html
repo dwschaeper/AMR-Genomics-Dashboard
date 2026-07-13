@@ -130,21 +130,25 @@ annotation fields.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="main.get_amr">
-<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">get_amr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'All</span> <span class="pre">Organisms'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.get_amr" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">get_amr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">organism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'All</span> <span class="pre">Organisms'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.get_amr" title="Link to this definition">¶</a></dt>
 <dd><p>Return AMR drug-class counts, optionally filtered by organism.</p>
 <p>The endpoint joins <code class="docutils literal notranslate"><span class="pre">AMR</span></code> and <code class="docutils literal notranslate"><span class="pre">Metadata</span></code> so the frontend can display
 a compact summary of AMR activity across all organisms or within a single
 organism filter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>organism</strong> – Organism name to filter by. Use <code class="docutils literal notranslate"><span class="pre">&quot;All</span> <span class="pre">Organisms&quot;</span></code> to
-return unfiltered results (default).</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organism</strong> – Organism name to filter by. Use <code class="docutils literal notranslate"><span class="pre">&quot;All</span> <span class="pre">Organisms&quot;</span></code> to
+return unfiltered results (default).</p></li>
+<li><p><strong>location</strong> – Location name to filter by. Returns first entry location if not provided.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><p>A JSON-serializable mapping containing:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">drug_class_counts</span></code>: Mapping of drug class to annotation count.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">organisms</span></code>: List of distinct organism names in the database.</p></li>
+<li><p>’’location_gene_counts’’: Mapping of gene name to annotation count for the specified location, first location entry if not provided.</p></li>
 </ul>
 </p>
 </dd>
