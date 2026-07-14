@@ -105,7 +105,7 @@ def get_overview():
 
 
 @app.get("/amr")
-def get_amr(organism: str = "All Organisms", location: str = None):
+def get_amr(organism: str = "All Organisms", location: str | None = None):
     """
     Return AMR drug-class counts, optionally filtered by organism.
 
@@ -146,6 +146,8 @@ def get_amr(organism: str = "All Organisms", location: str = None):
     drug_class_counts = amr_data.groupby("DrugClass").size().to_dict()
 
     # grab genes present by location
+    locations = pd.read_sql_query(text("SELECT DISTINCT City || ',' || State as location FROM Metadata"), con=engine)
+    locations = sorted(locations["location"].unique().tolist())
     if location:
         query = text("""
                      SELECT Gene
@@ -155,14 +157,13 @@ def get_amr(organism: str = "All Organisms", location: str = None):
                  """)
         location_data = pd.read_sql_query(query, con=engine, params={"location": location})
     else:
-        first_entry = pd.read_sql_query(text("SELECT City || ',' || State as location FROM Metadata LIMIT 1"), con=engine)
         query = text("""
                      SELECT Gene
                      FROM AMR
                      INNER JOIN Metadata ON AMR.RecordID = Metadata.RecordID
                      WHERE City || ',' || State in (:location)
                  """)
-        location_data = pd.read_sql_query(query, con=engine, params={"location": first_entry["location"].iloc[0]})
+        location_data = pd.read_sql_query(query, con=engine, params={"location": locations[0]})
 
     location_gene_counts = location_data.groupby("Gene").size().to_dict()
 
@@ -174,6 +175,7 @@ def get_amr(organism: str = "All Organisms", location: str = None):
 
     result["drug_class_counts"] = drug_class_counts
     result["location_gene_counts"] = location_gene_counts
+    result["locations"] = locations
     result["organisms"] = organisms
 
     return result

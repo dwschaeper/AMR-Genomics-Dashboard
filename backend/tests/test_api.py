@@ -62,7 +62,8 @@ def test_amr_location():
 
     assert "drug_class_counts" in data
     assert "location_gene_counts" in data
-    
+    assert "locations" in data
+
 
 def test_add_isolate():
     """
